@@ -2,7 +2,7 @@ var express = require("express");
 const multer = require("multer");
 const fs = require("fs");
 
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: "public/images/uploads" });
 
 var router = express.Router();
 
@@ -15,9 +15,12 @@ router.get("/", function (req, res, next) {
 router.post("/upload", upload.single("file"), function (req, res, next) {
   const fileName = req.file.originalname;
   const fileContent = fs.readFileSync(req.file.path);
-  fs.writeFileSync(`uploads/${fileName}`, fileContent);
+  fs.writeFileSync(`public/images/uploads/${fileName}`, fileContent);
 
-  res.send(req.file);
+  res.send({
+    data:
+      "http://localhost:3000/images/uploads/" + decodeURIComponent(fileName),
+  });
 });
 
 module.exports = router;
